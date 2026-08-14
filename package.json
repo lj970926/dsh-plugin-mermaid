@@ -1,0 +1,41 @@
+{
+  "name": "dsh-plugin-mermaid",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness web client plugin that renders ```mermaid code blocks with a chart/source toggle.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "install.sh",
+    "README.md"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "mermaid",
+    "diagrams"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lj970926/dsh-plugin-mermaid.git"
+  },
+  "homepage": "https://github.com/lj970926/dsh-plugin-mermaid#readme",
+  "bugs": {
+    "url": "https://github.com/lj970926/dsh-plugin-mermaid/issues"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [],
+      "immediately": true
+    }
+  }
+}
