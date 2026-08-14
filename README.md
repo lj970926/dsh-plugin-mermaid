@@ -18,6 +18,43 @@ client plugin that renders ` ```mermaid ` code blocks in chat messages, with a
 
 ## Install
 
+### From GitHub (recommended)
+
+This package ships prebuilt `lib/` files and declares `dsh.bundle`, so it can
+be installed directly into the DSH web profile:
+
+```bash
+dsh plugin --profile web add github:lj970926/dsh-plugin-mermaid
+```
+
+Then restart `dsh web` and hard-refresh the browser (Cmd+Shift+R).
+
+To pin a revision for reproducibility, append a commit SHA or tag:
+
+```bash
+dsh plugin --profile web add github:lj970926/dsh-plugin-mermaid#<commit-or-tag>
+```
+
+> Because the published files are already in `lib/`, this package has no
+> `prepare` build step and does not require pnpm `allowBuilds` authorization.
+> If you fork the repository and add a build step, follow DSH's [packaging
+> docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)
+> and add the package key under `allowBuilds` in the profile's
+> `pnpm-workspace.yaml` when prompted.
+
+### From a local checkout
+
+If you are developing the plugin, install the checkout as a linked bundle:
+
+```bash
+dsh plugin --profile web add /absolute/path/to/dsh-plugin-mermaid
+```
+
+### Legacy copy script
+
+The repository also keeps `install.sh` for copying files directly into an
+existing web profile:
+
 ```bash
 git clone https://github.com/lj970926/dsh-plugin-mermaid.git
 bash dsh-plugin-mermaid/install.sh
@@ -36,7 +73,7 @@ Then restart `dsh web` and hard-refresh the browser (Cmd+Shift+R).
 
 ```bash
 mkdir -p ~/.dsh/profiles/web/node_modules/dsh-plugin-mermaid
-cp -R lib package.json ~/.dsh/profiles/web/node_modules/dsh-plugin-mermaid/
+cp -R lib package.json cordis.patch.yml ~/.dsh/profiles/web/node_modules/dsh-plugin-mermaid/
 cat >> ~/.dsh/profiles/web/cordis.patch.yml <<'EOF'
 
 - insert:
@@ -45,9 +82,10 @@ cat >> ~/.dsh/profiles/web/cordis.patch.yml <<'EOF'
 EOF
 ```
 
-> Note: `cordis.patch.yml` must not contain a bare `[]` alongside block
-> entries — if it is currently only `[]`, delete that line first. The install
-> script handles this for you.
+> Prefer `dsh plugin add`; it records the bundle in the profile manifest and
+> keeps it enabled across profile updates. `cordis.patch.yml` must not contain
+> a bare `[]` alongside block entries — if it is currently only `[]`, delete
+> that line first. The install script handles this for you.
 
 ## Usage
 

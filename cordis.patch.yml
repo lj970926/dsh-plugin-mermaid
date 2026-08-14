@@ -1,0 +1,5 @@
+# Bundle patch for dsh-plugin-mermaid.
+# Installed profiles compose this file in dsh.profile.bundles order.
+- insert:
+    - id: dsh-plugin-mermaid
+      name: dsh-plugin-mermaid
