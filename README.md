@@ -83,9 +83,10 @@ EOF
 ```
 
 > Prefer `dsh plugin add`; it records the bundle in the profile manifest and
-> keeps it enabled across profile updates. `cordis.patch.yml` must not contain
-> a bare `[]` alongside block entries — if it is currently only `[]`, delete
-> that line first. The install script handles this for you.
+> keeps it enabled across profile updates. Newer DSH releases require the
+> profile's `cordis.patch.yml` to parse as a top-level YAML array; if the file
+> has no entries, keep it as `[]`. The legacy install script normalizes this
+> for you.
 
 ## Usage
 

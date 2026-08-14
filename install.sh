@@ -26,26 +26,30 @@ fi
 
 echo "→ Copying plugin to $TARGET_DIR"
 mkdir -p "$TARGET_DIR"
-cp -R "$SCRIPT_DIR/package.json" "$SCRIPT_DIR/lib" "$TARGET_DIR/"
+cp -R "$SCRIPT_DIR/package.json" "$SCRIPT_DIR/lib" "$SCRIPT_DIR/cordis.patch.yml" "$TARGET_DIR/"
 
-if [[ ! -f "$PATCH_FILE" ]]; then
-  : > "$PATCH_FILE"
-fi
-
-# If the file is only the default flow-sequence "[]", it cannot share a YAML
-# document with block entries appended below. Truncate it to an empty document
-# first so the append yields valid YAML.
-if [[ "$(tr -d '[:space:]' < "$PATCH_FILE")" == "[]" ]]; then
-  : > "$PATCH_FILE"
+# DSH requires this user patch file to parse as a top-level YAML array. A
+# comment-only file (for example, after manually deleting a previous entry) is
+# invalid, so normalize a missing/empty/comment-only file to [] before editing.
+if [[ ! -f "$PATCH_FILE" ]] || ! grep -Eqv '^[[:space:]]*(#|$)' "$PATCH_FILE"; then
+  printf '[]\n' > "$PATCH_FILE"
 fi
 
 if grep -q "id: $PLUGIN_NAME" "$PATCH_FILE"; then
   echo "→ Patch entry already present in $PATCH_FILE (skipping)"
+elif [[ "$(tr -d '[:space:]' < "$PATCH_FILE")" == "[]" ]]; then
+  # The default flow-sequence form cannot coexist with block entries appended
+  # below, so replace it with the first block entry.
+  echo "→ Adding entry to $PATCH_FILE"
+  cat > "$PATCH_FILE" <<EOF
+# Added by $PLUGIN_NAME/install.sh
+- insert:
+    - id: $PLUGIN_NAME
+      name: $PLUGIN_NAME
+EOF
 else
   echo "→ Adding entry to $PATCH_FILE"
-  if [[ -s "$PATCH_FILE" ]]; then
-    printf '\n' >> "$PATCH_FILE"
-  fi
+  printf '\n' >> "$PATCH_FILE"
   cat >> "$PATCH_FILE" <<EOF
 # Added by $PLUGIN_NAME/install.sh
 - insert:
